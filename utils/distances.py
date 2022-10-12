@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-from scipy.spatial.distance import braycurtis
+from scipy.spatial.distance import braycurtis, dice
+from sklearn.feature_selection import mutual_info_classif
 
 
 def pairwise_bc(df):
@@ -44,3 +45,44 @@ def pairwise_L1_dist(df):
         outL1[item] = L1dist
 
     return pd.DataFrame(outL1)
+
+
+def pairwise_mi(df):
+    """
+    Compute the mutual information between per-concept distributions
+    :param df: Pandas dataframe of counts in a region or time. [concepts x regions]
+    :return: dataframe of pairwise distances
+    """
+    
+    outmi = {}
+
+    for item in df.columns:
+        mi = df.apply(
+            lambda xx: mutual_info_classif(df[item].to_numpy().reshape(-1, 1), xx.to_numpy().reshape(-1,1)), 
+            axis=0
+        )
+        
+        outmi[item] = mi.values.ravel()
+
+    return pd.DataFrame(outmi)
+
+
+def pairwise_dice(df):
+    """
+    Compute the dice between per-concept distributions
+    :param df: Pandas dataframe of counts in a region or time. [concepts x regions]
+    :return: dataframe of pairwise distances
+    """
+
+    outdice = {}
+
+    for item in df.columns:
+        dd = df.apply(
+            lambda xx: dice(np.where(df[item].to_numpy()>0, 1, 0), np.where(xx.to_numpy()>0, 1, 0)), 
+            axis=0
+        )
+        
+        outdice[item] = dd
+
+    return pd.DataFrame(outdice)
+
