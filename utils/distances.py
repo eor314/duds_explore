@@ -58,7 +58,7 @@ def pairwise_mi(df):
 
     for item in df.columns:
         mi = df.apply(
-            lambda xx: mutual_info_classif(df[item].to_numpy().reshape(-1, 1), xx.to_numpy().reshape(-1,1)), 
+            lambda xx: mutual_info_classif(df[item].to_numpy().reshape(-1, 1), xx.to_numpy().ravel()), 
             axis=0
         )
         
