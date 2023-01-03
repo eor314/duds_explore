@@ -1,6 +1,8 @@
 # stuff
 .ipynb_checkpoints/
 datasets/
+for_lonny/
+*.png
 
 # Caches
 *__pycache__/
